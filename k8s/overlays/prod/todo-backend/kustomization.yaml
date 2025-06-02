@@ -14,4 +14,4 @@ replicas:
 
 images:
   - name: ghcr.io/lakmalniranga/todo-backend
-    newTag: 1.0
+    newTag: "1.0"
