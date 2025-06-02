@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: todo-applications
+  namespace: argocd
+  labels:
+    app.kubernetes.io/managed-by: argocd
+    app.kubernetes.io/part-of: todo-application
+spec:
+  generators:
+    - list:
+        elements:
+          - name: mongodb
+            path: k8s/overlays/prod/mongodb
+          - name: todo-backend
+            path: k8s/overlays/prod/todo-backend
+  template:
+    metadata:
+      name: "{{name}}"
+      namespace: argocd
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        app.kubernetes.io/name: "{{name}}"
+        app.kubernetes.io/instance: "{{name}}"
+        app.kubernetes.io/managed-by: argocd
+        app.kubernetes.io/part-of: todo-application
+    spec:
+      destination:
+        namespace: todo-app
+        server: https://kubernetes.default.svc
+      project: default
+      source:
+        path: "{{path}}"
+        repoURL: https://github.com/lakmalniranga/todo-backend-config.git
+        targetRevision: HEAD
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
