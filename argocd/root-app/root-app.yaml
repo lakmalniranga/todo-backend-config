@@ -2,9 +2,10 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: todo-apps
+  namespace: argocd
 spec:
   destination:
-    namespace: argocd
+    namespace: todo-app
     server: https://kubernetes.default.svc
   project: default
   source:
